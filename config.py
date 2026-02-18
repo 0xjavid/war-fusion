@@ -1,6 +1,11 @@
 ﻿import os
+
+# ================= TELEGRAM =================
 TOKEN = os.getenv("TOKEN")
-# محدوده‌ها: lat_min, lat_max, lon_min, lon_max
+if not TOKEN:
+    raise ValueError("TOKEN environment variable not set")
+
+# ================= AREAS (Middle East only) =================
 AREAS = {
     "IRAN": (24,40,44,63),
     "ISRAEL": (29,34,34,36),
@@ -19,5 +24,9 @@ AREAS = {
     "RED_SEA": (12,28,32,44)
 }
 
-CHECK_INTERVAL = 60
-STATUS_INTERVAL = 300
+# ================= TIMERS =================
+CHECK_INTERVAL = int(os.getenv("CHECK_INTERVAL", 60))
+STATUS_INTERVAL = int(os.getenv("STATUS_INTERVAL", 300))
+
+# ================= OPTIONS =================
+DEBUG = os.getenv("DEBUG", "0") == "1"
