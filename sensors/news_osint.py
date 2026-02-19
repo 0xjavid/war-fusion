@@ -2,24 +2,28 @@
 from fusion.scoring import push
 
 KEYWORDS = [
-    "missile","airstrike","rocket","drone","intercept",
-    "explosion","attack","bombardment","raid","sirens"
+    "missile","rocket","strike","airstrike","drone","explosion",
+    "intercept","sirens","attack","raid","bombardment"
 ]
 
-AREAS_MAP = {
+ME_WORDS = {
     "iran":"IRAN",
     "israel":"ISRAEL",
     "lebanon":"LEBANON",
+    "hezbollah":"LEBANON",
     "gaza":"ISRAEL",
+    "hamas":"ISRAEL",
     "syria":"SYRIA",
     "iraq":"IRAQ",
     "yemen":"YEMEN",
-    "saudi":"SAUDI"
+    "houthi":"YEMEN",
+    "saudi":"SAUDI",
+    "red sea":"RED_SEA",
+    "gulf":"PERSIAN_GULF"
 }
 
 FEEDS = [
     "https://feeds.reuters.com/reuters/worldNews",
-    "https://rss.cnn.com/rss/edition_world.rss",
     "http://feeds.bbci.co.uk/news/world/rss.xml",
     "https://www.aljazeera.com/xml/rss/all.xml"
 ]
@@ -31,19 +35,23 @@ def news_osint():
         for url in FEEDS:
             feed=feedparser.parse(url)
 
-            for e in feed.entries[:15]:
+            for e in feed.entries[:20]:
                 title=e.title.lower()
 
                 if title in seen:
                     continue
                 seen.add(title)
 
+                # اول باید کلمه نظامی داشته باشد
                 if not any(k in title for k in KEYWORDS):
                     continue
 
-                for word,area in AREAS_MAP.items():
+                # بعد باید منطقه خاورمیانه داشته باشد
+                for word,area in ME_WORDS.items():
                     if word in title:
-                        push(area,2,"خبر فوری: "+e.title[:80])
+                        print("ME NEWS:",title)
+                        push(area,2,"خبر فوری: "+e.title[:90])
+                        break
 
     except:
         pass
